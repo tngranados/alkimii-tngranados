@@ -1,17 +1,21 @@
-// This file is automatically compiled by Webpack, along with any other files
-// present in this directory. You're encouraged to place your actual application logic in
-// a relevant structure within app/javascript and only use these pack files to reference
-// that code so it'll be compiled.
+import Vue from "vue/dist/vue.esm";
+import store from "../src/vuex";
+import router from "../src/routes.js";
+import axios from "axios";
 
-require("@rails/ujs").start()
-require("turbolinks").start()
-require("@rails/activestorage").start()
-require("channels")
+import Header from "../src/components/layout/header";
+Vue.component("nav-header", Header);
 
+// Set default axios options
+axios.interceptors.request.use(function(config) {
+  config.headers["X-CSRF-Token"] = document
+    .querySelector("meta[name='csrf-token']")
+    .getAttribute("content");
 
-// Uncomment to copy all static images under ../images to the output folder and reference
-// them with the image_pack_tag helper in views (e.g <%= image_pack_tag 'rails.png' %>)
-// or the `imagePath` JavaScript helper below.
-//
-// const images = require.context('../images', true)
-// const imagePath = (name) => images(name, true)
+  return config;
+});
+
+const app = new Vue({
+  router,
+  store
+}).$mount("#app");
