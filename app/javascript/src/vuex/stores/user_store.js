@@ -84,7 +84,12 @@ const UserStore = {
           url: `/api/users/${user.id}`,
           method: "put",
           headers: { "Content-Type": "application/json" },
-          data: { user }
+          data: {
+            email: user.email,
+            password: user.password,
+            password_confirmation: user.password_confirmation,
+            is_admin: user.is_admin
+          }
         })
           .then(res => {
             context.commit("progress", "success");

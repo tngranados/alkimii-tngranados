@@ -1,6 +1,10 @@
 class Api::UsersController < Api::ApiController
-  # skip_before_action :verify_authenticity_token
   before_action :load_user, except: [:index, :create]
+  before_action :authenticate_user!, :redirect_unless_admin_or_self, except: [:index]
+  
+  def redirect_unless_admin_or_self
+    head :unauthorized unless current_user.try(:is_admin?) || (@user && current_user && current_user.email == @user.email)
+  end
 
   def index
     @users = User.all
@@ -20,10 +24,15 @@ class Api::UsersController < Api::ApiController
   end
 
   def update
-    if @user.update(user_params)
-      render template: '/api/users/edit'
+    # Check if non admin user tries to add herself admin rights
+    if !current_user.try(:is_admin?) && user_params[:is_admin]
+      render json: {success: false, errors: {"is_admin":["cannot give admin rights to yourself"]}}.to_json, status: 422
     else
-      render json: {success: false, errors: @user.errors.messages}.to_json, status: 422
+      if @user.update(user_params)
+        render template: '/api/users/edit'
+      else
+        render json: {success: false, errors: @user.errors.messages}.to_json, status: 422
+      end
     end
   end
 

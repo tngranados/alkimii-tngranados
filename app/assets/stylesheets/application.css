@@ -3,8 +3,13 @@
   border-color: #eb4034;
 }
 
+.login-error {
+  margin-left: 1rem;
+  font-size: 1rem;
+}
+
 @media (min-width: 65rem) {
-  .error aside {
+  aside.error {
     right: -6.5rem;
   }
 }

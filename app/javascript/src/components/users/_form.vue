@@ -3,38 +3,37 @@
     <fieldset>
       <legend>{{ legend }}</legend>
       <label for="email">Email</label>
-      <aside>
-        <span class="error">{{ errors.email }}</span>
+      <aside class="error">
+        <span>{{ UserStore.errors.email }}</span>
       </aside>
-      <input id="email" type="text" v-model="user.email" class="form-control" />
+      <input id="email" type="text" v-model="UserStore.user.email" class="form-control" />
       <label for="password">Password</label>
-      <aside>
-        <span class="error">{{ errors.password }}</span>
+      <aside class="error">
+        <span>{{ UserStore.errors.password }}</span>
       </aside>
-      <input
-        id="password"
-        type="password"
-        v-model="user.password"
-        class="form-control"
-      />
+      <input id="password" type="password" v-model="UserStore.user.password" class="form-control" />
       <label for="password-confirmation">Password confirmation</label>
-      <aside>
-        <span class="error">{{ errors.password_confirmation }}</span>
+      <aside class="error">
+        <span>{{ UserStore.errors.password_confirmation }}</span>
       </aside>
       <input
         id="password-confirmation"
         type="password"
-        v-model="user.password_confirmation"
+        v-model="UserStore.user.password_confirmation"
         class="form-control"
       />
+      <aside class="error">
+        <span>{{ UserStore.errors.is_admin }}</span>
+      </aside>
       <label for="is-admin">
         Is Admin
         <input
           id="is-admin"
           type="checkbox"
           name="Is Admin"
-          v-model="user.is_admin"
+          v-model="UserStore.user.is_admin"
           class="form-control"
+          :disabled="!AuthStore.loggedInUser.is_admin"
         />
       </label>
       <br />
@@ -51,7 +50,7 @@ export default {
   props: ["legend"],
 
   data: function() {
-    return this.$store.state.UserStore;
+    return this.$store.state;
   }
 };
 </script>

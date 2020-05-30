@@ -4,7 +4,9 @@ import router from "../src/routes.js";
 import axios from "axios";
 
 import Header from "../src/components/layout/header";
+import Login from "../src/components/home/login";
 Vue.component("nav-header", Header);
+Vue.component("login", Login);
 
 // Set default axios options
 axios.interceptors.request.use(function(config) {
@@ -17,5 +19,12 @@ axios.interceptors.request.use(function(config) {
 
 const app = new Vue({
   router,
-  store
+  store,
+  created: function() {
+    // Check if logged in
+    const loggedInUser = JSON.parse(localStorage.getItem("user"));
+    if (loggedInUser) {
+      store.commit("AuthStore/login", loggedInUser);
+    }
+  }
 }).$mount("#app");

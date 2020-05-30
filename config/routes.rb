@@ -1,11 +1,7 @@
 Rails.application.routes.draw do
-
-  devise_for :users, only: [:sessions]
+  devise_for :users, path: 'api'
 
   namespace :api, :defaults => { :format => 'json' } do
-    as :user do
-      delete 'sign_out', to: '/devise/sessions#destroy'
-    end
     resources :users, except: :show
   end
 

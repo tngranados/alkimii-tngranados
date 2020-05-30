@@ -8,42 +8,33 @@
           <th>Email</th>
           <th>Admin</th>
           <th></th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="user in users" :key="user.id">
+        <tr v-for="user in UserStore.users" :key="user.id">
+          <td>{{ user.id }}</td>
+          <td>{{ new Date(user.created_at).toLocaleString() }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.is_admin }}</td>
           <td>
-            <router-link
-              :to="{ name: 'edit_user_path', params: { id: user.id } }"
-              >{{ user.id }}</router-link
-            >
+            <a
+              v-if="AuthStore.loggedInUser.is_admin || AuthStore.loggedInUser.id === user.id"
+              href="#"
+              @click="destroy(user.id)"
+            >×</a>
           </td>
           <td>
             <router-link
+              v-if="AuthStore.loggedInUser.is_admin || AuthStore.loggedInUser.id === user.id"
               :to="{ name: 'edit_user_path', params: { id: user.id } }"
-              >{{ user.created_at }}</router-link
-            >
-          </td>
-          <td>
-            <router-link
-              :to="{ name: 'edit_user_path', params: { id: user.id } }"
-              >{{ user.email }}</router-link
-            >
-          </td>
-          <td>
-            <router-link
-              :to="{ name: 'edit_user_path', params: { id: user.id } }"
-              >{{ user.is_admin }}</router-link
-            >
-          </td>
-          <td>
-            <a href="#" @click="destroy(user.id)">×</a>
+            >✎</router-link>
           </td>
         </tr>
       </tbody>
-      <tfoot>
+      <tfoot v-if="AuthStore.loggedInUser.is_admin">
         <tr>
-          <td colspan="5" align="right">
+          <td colspan="6" align="right">
             <router-link :to="{ name: 'new_user_path' }">New user</router-link>
           </td>
         </tr>
@@ -61,7 +52,7 @@ export default {
   },
 
   data: function() {
-    return this.$store.state.UserStore;
+    return this.$store.state;
   },
 
   mounted: function() {
