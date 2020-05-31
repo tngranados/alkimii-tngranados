@@ -1,11 +1,11 @@
 <template>
   <layout>
     <article>
-      <header class="note-header">
+      <header>
         <router-link :to="{ name: 'new_note_path' }">New note</router-link>
       </header>
       <section class="note" v-for="note in NotesStore.notes.slice().reverse()" :key="note.id">
-        <h3>{{ note.title }}</h3>
+        <h3>[{{ note.id }}] {{ note.title }}</h3>
         <p>{{ note.message }}</p>
         <footer>
           <p>
@@ -38,6 +38,9 @@
 
 <script>
 import Layout from "../layout/layout";
+import { createConsumer } from "@rails/actioncable";
+
+const cable = createConsumer(`ws://${window.location.host}/cable`);
 
 export default {
   components: {
@@ -46,6 +49,37 @@ export default {
 
   data: function() {
     return this.$store.state;
+  },
+
+  created() {
+    if (
+      !cable.subscriptions.subscriptions.find(
+        sus => sus.identifier === '{"channel":"NotesChannel"}'
+      )
+    ) {
+      cable.subscriptions.create(
+        {
+          channel: "NotesChannel"
+        },
+        {
+          connected: function() {
+            console.log("connected");
+          },
+          disconnected: function() {
+            console.log("disconnected");
+          },
+          received: data => {
+            if (data.type === "new") {
+              this.$store.dispatch("NotesStore/cableAdd", data.note);
+            } else if (data.type === "update") {
+              this.$store.dispatch("NotesStore/cableUpdate", data.note);
+            } else if (data.type === "destroy") {
+              this.$store.dispatch("NotesStore/cableDestroy", data.note);
+            }
+          }
+        }
+      );
+    }
   },
 
   mounted: function() {

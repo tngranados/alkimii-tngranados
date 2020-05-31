@@ -6,6 +6,8 @@ Rails.application.routes.draw do
     resources :notes, except: :show
   end
 
+  mount ActionCable.server => '/cable'
+
   root :to => "application#index"
   match "*path", to: "application#index", format: false, via: :get
 

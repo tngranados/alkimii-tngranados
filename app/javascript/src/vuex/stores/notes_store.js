@@ -19,6 +19,20 @@ const NotesStore = {
       state.notes = res.data.notes;
       return state;
     },
+    add(state, note) {
+      state.notes.push(note);
+      return state;
+    },
+    update(state, updatedNote) {
+      const i = state.notes.findIndex(note => note.id === updatedNote.id);
+      state.notes[i] = updatedNote;
+      state.notes = [...state.notes];
+      return state;
+    },
+    destroy(state, id) {
+      state.notes = state.notes.filter(note => note.id !== id);
+      return state;
+    },
     progress(state, step) {
       state.progress = step;
       return state.progress;
@@ -49,6 +63,50 @@ const NotesStore = {
     },
     new(context) {
       context.commit("one", {});
+    },
+    cableAdd(context, note) {
+      context.commit("add", note);
+      const currentUser = context.rootGetters["AuthStore/loggedInUser"];
+      if (note.user_id !== currentUser.id) {
+        context.dispatch(
+          "FeedbackStore/feedback",
+          {
+            variant: "success",
+            title: "A new note has been added"
+          },
+          { root: true }
+        );
+      }
+    },
+    cableUpdate(context, note) {
+      context.commit("update", note);
+      const currentUser = context.rootGetters["AuthStore/loggedInUser"];
+      if (note.user_id === currentUser.id) {
+        context.dispatch(
+          "FeedbackStore/feedback",
+          {
+            variant: "success",
+            title: "Your note has been edited",
+            message: `The note with id ${note.id} has been edited.`
+          },
+          { root: true }
+        );
+      }
+    },
+    cableDestroy(context, note) {
+      context.commit("destroy", note.id);
+      const currentUser = context.rootGetters["AuthStore/loggedInUser"];
+      if (note.user_id === currentUser.id) {
+        context.dispatch(
+          "FeedbackStore/feedback",
+          {
+            variant: "success",
+            title: "Your note has been deleted",
+            message: `The note with id ${note.id} has been deleted.`
+          },
+          { root: true }
+        );
+      }
     },
     create(context, form) {
       context.commit("progress", "loading");

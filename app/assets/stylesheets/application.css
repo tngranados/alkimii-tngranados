@@ -78,7 +78,3 @@ a:visited {
   color: var(--color-caption);
   font-size: 0.85em;
 }
-
-.note-header {
-  text-align: right;
-}

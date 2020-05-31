@@ -17,6 +17,7 @@ class Api::NotesController < Api::ApiController
     @note = current_user.notes.create(notes_params)
 
     if @note.save
+      ActionCable.server.broadcast "notes", note: to_json(@note), type: :new
       render template: '/api/notes/edit'
     else
       render json: {success: false, errors: @note.errors.messages}.to_json, status: 422
@@ -25,6 +26,7 @@ class Api::NotesController < Api::ApiController
 
   def update
     if @note.update(notes_params)
+      ActionCable.server.broadcast "notes", note: to_json(@note), type: :update
       render template: '/api/notes/edit'
     else
       render json: {success: false, errors: @note.errors.messages}.to_json, status: 422
@@ -33,6 +35,7 @@ class Api::NotesController < Api::ApiController
 
   def destroy
     if @note.destroy
+      ActionCable.server.broadcast "notes", note: to_json(@note), type: :destroy
       head 200
     else
       render json: {success: false, errors: @note.errors.messages}.to_json, status: 422
@@ -50,5 +53,14 @@ class Api::NotesController < Api::ApiController
   
     def load_note
       @note = Note.find(params[:id])
+    end
+
+    def to_json(note)
+      Jbuilder.new do |json|
+        ApplicationController.render(
+          template: 'api/notes/show.json.jbuilder',
+          locals: { note: note, json: json }
+        )
+      end.attributes!
     end
 end
