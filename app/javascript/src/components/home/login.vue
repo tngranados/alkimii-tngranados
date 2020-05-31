@@ -1,5 +1,6 @@
 <template>
   <main>
+    <feedback />
     <form @submit.prevent="login" method="post">
       <fieldset>
         <legend>Login</legend>

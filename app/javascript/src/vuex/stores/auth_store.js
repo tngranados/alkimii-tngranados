@@ -44,11 +44,15 @@ const AuthStore = {
             resolve(res);
           })
           .catch(e => {
-            if (e.response && e.response.data && e.response.data.error) {
-              context.commit("error", e.response.data.error);
-            } else {
-              context.commit("error", "Error logging in");
-            }
+            context.dispatch(
+              "FeedbackStore/feedback",
+              {
+                variant: "error",
+                title: "Login",
+                message: e.response.data.error ?? e
+              },
+              { root: true }
+            );
             reject(e);
           });
       });
@@ -69,11 +73,15 @@ const AuthStore = {
             resolve();
           })
           .catch(e => {
-            if (e.response && e.response.data && e.response.data.error) {
-              context.commit("error", e.response.data.error);
-            } else {
-              context.commit("error", "Error logging out");
-            }
+            context.dispatch(
+              "FeedbackStore/feedback",
+              {
+                variant: "error",
+                title: "Logout",
+                message: e.response.data.error ?? e
+              },
+              { root: true }
+            );
             reject(e);
           });
       });

@@ -1,6 +1,12 @@
+:root {
+  --color-error: #eb4034;
+  --color-main: #0064c1;
+  --color-contrast: white;
+}
+
 .error {
-  color: #eb4034;
-  border-color: #eb4034;
+  color: var(--color-error);
+  border-color: var(--color-error);
 }
 
 .login-error {
@@ -12,12 +18,57 @@
   aside.error {
     right: -6.5rem;
   }
+
+  aside.feedback-list {
+    top: 0.8rem;
+    right: -15.5rem;
+    border: 0;
+    width: 18rem;
+    max-width: 18rem;
+  }
+}
+
+.feedback.error {
+  color: var(--color-contrast);
+  background-color: var(--color-error);
+}
+
+.feedback.success {
+  color: var(--color-contrast);
+  background-color: var(--color-main);
+}
+
+.feedback {
+  padding: 0.45rem;
+  border-radius: 0.3rem;
+  margin-bottom: 0.45rem;
+  transform: translateX(100%);
+  animation: feedback-animation 4s forwards;
+  opacity: 1;
+  transition: all 0.2s;
+}
+
+@keyframes feedback-animation {
+  0% {
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+    transform: translateX(0%);
+  }
+  95% {
+    opacity: 1;
+    transform: translateX(0%);
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 a {
-  color: #0064c1;
+  color: var(--color-main);
   text-decoration: none;
 }
 a:visited {
-  color: #0064c1;
+  color: var(--color-main);
 }

@@ -35,7 +35,17 @@ const UserStore = {
         method: "get"
       })
         .then(res => context.commit("many", res))
-        .catch(e => console.log(e));
+        .catch(e => {
+          context.dispatch(
+            "FeedbackStore/feedback",
+            {
+              variant: "error",
+              title: "Failed to get users",
+              message: e.response.data.error ?? e
+            },
+            { root: true }
+          );
+        });
     },
     new(context) {
       context.commit("one", {});
