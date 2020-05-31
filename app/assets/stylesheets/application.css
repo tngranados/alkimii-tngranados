@@ -2,6 +2,7 @@
   --color-error: #eb4034;
   --color-main: #0064c1;
   --color-contrast: white;
+  --color-caption: #aaaaaa;
 }
 
 .error {
@@ -71,4 +72,13 @@ a {
 }
 a:visited {
   color: var(--color-main);
+}
+
+.note > footer > p {
+  color: var(--color-caption);
+  font-size: 0.85em;
+}
+
+.note-header {
+  text-align: right;
 }

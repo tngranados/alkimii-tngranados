@@ -1,22 +1,22 @@
 import showErrors from "../../helpers/showErrors";
 import axios from "axios";
 
-const UserStore = {
+const NotesStore = {
   namespaced: true,
   state: {
-    users: [],
-    user: {},
+    notes: [],
+    note: {},
     errors: {},
     progress: ""
   },
   mutations: {
-    one(state, user) {
+    one(state, note) {
       state.errors = {};
-      state.user = user;
+      state.note = note;
       return state;
     },
     many(state, res) {
-      state.users = res.data.users;
+      state.notes = res.data.notes;
       return state;
     },
     progress(state, step) {
@@ -31,7 +31,7 @@ const UserStore = {
   actions: {
     index(context) {
       axios({
-        url: "/api/users",
+        url: "/api/notes",
         method: "get"
       })
         .then(res => context.commit("many", res))
@@ -40,7 +40,7 @@ const UserStore = {
             "FeedbackStore/feedback",
             {
               variant: "error",
-              title: "Failed to get users",
+              title: "Failed to get notes",
               message: e.response.data.error ?? e
             },
             { root: true }
@@ -54,10 +54,15 @@ const UserStore = {
       context.commit("progress", "loading");
       return new Promise((resolve, reject) => {
         axios({
-          url: "/api/users",
+          url: "/api/notes",
           method: "post",
           headers: { "Content-Type": "application/json" },
-          data: { user: form }
+          data: {
+            note: {
+              title: form.title ?? "",
+              message: form.message ?? ""
+            }
+          }
         })
           .then(res => {
             context.commit("progress", "success");
@@ -71,34 +76,32 @@ const UserStore = {
       });
     },
     edit(context, id) {
-      const user = {
-        ...context.state.users.find(u => {
-          return u.id === id;
+      const note = {
+        ...context.state.notes.find(n => {
+          return n.id === id;
         })
       };
-      if (user.id) {
-        context.commit("one", user);
+      if (note.id) {
+        context.commit("one", note);
       } else {
         axios({
-          url: `/api/users/${id}/edit`,
+          url: `/api/notes/${id}/edit`,
           method: "get"
         }).then(res => {
-          context.commit("one", res.data.user);
+          context.commit("one", res.data.note);
         });
       }
     },
-    update(context, user) {
+    update(context, note) {
       context.commit("progress", "loading");
       return new Promise((resolve, reject) => {
         axios({
-          url: `/api/users/${user.id}`,
+          url: `/api/notes/${note.id}`,
           method: "put",
           headers: { "Content-Type": "application/json" },
           data: {
-            email: user.email,
-            password: user.password,
-            password_confirmation: user.password_confirmation,
-            is_admin: user.is_admin
+            title: note.title,
+            message: note.message
           }
         })
           .then(res => {
@@ -114,14 +117,14 @@ const UserStore = {
     },
     destroy(context, id) {
       axios({
-        url: `/api/users/${id}`,
+        url: `/api/notes/${id}`,
         method: "delete"
       }).catch(e => {
         context.dispatch(
           "FeedbackStore/feedback",
           {
             variant: "error",
-            title: "Failed to delete user",
+            title: "Failed to delete note",
             message: e.response.data.error ?? e
           },
           { root: true }
@@ -131,4 +134,4 @@ const UserStore = {
   }
 };
 
-export default UserStore;
+export default NotesStore;

@@ -4,12 +4,14 @@ Vue.use(Vuex);
 
 import AuthStore from "./stores/auth_store.js";
 import FeedbackStore from "./stores/feedback_store.js";
+import NotesStore from "./stores/notes_store.js";
 import UserStore from "./stores/user_store.js";
 
 const store = new Vuex.Store({
   modules: {
     AuthStore,
     FeedbackStore,
+    NotesStore,
     UserStore
   }
 });

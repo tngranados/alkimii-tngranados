@@ -3,7 +3,9 @@ import VueRouter from "vue-router";
 import store from "./vuex/index";
 Vue.use(VueRouter);
 
-import HomeIndex from "./components/home/index";
+import NotesIndex from "./components/notes/index";
+import NoteEdit from "./components/notes/edit";
+import NoteNew from "./components/notes/new";
 import Login from "./components/home/login";
 import UserIndex from "./components/users/index";
 import UserEdit from "./components/users/edit";
@@ -12,15 +14,32 @@ import UserNew from "./components/users/new";
 const router = new VueRouter({
   mode: "history",
   routes: [
+    { path: "/", redirect: { name: "login_path" } },
+    { path: "/login", component: Login, name: "login_path" },
     {
-      path: "/",
-      component: HomeIndex,
-      name: "root_path",
+      path: "/notes",
+      component: NotesIndex,
+      name: "notes_path",
       meta: {
         requiresAuth: true
       }
     },
-    { path: "/login", component: Login, name: "login_path" },
+    {
+      path: "/note/:id/edit",
+      component: NoteEdit,
+      name: "edit_note_path",
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: "/note/new",
+      component: NoteNew,
+      name: "new_note_path",
+      meta: {
+        requiresAuth: true
+      }
+    },
     {
       path: "/users",
       component: UserIndex,
@@ -44,7 +63,8 @@ const router = new VueRouter({
       meta: {
         requiresAuth: true
       }
-    }
+    },
+    { path: "*", redirect: "/" }
   ]
 });
 

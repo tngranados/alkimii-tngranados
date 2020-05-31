@@ -28,7 +28,7 @@ export default {
 
   mounted: function() {
     if (this.$store.getters["AuthStore/loggedIn"]) {
-      this.$router.push({ name: "root_path" });
+      this.$router.push({ name: "notes_path" });
     }
   },
 
@@ -37,7 +37,7 @@ export default {
       this.$store
         .dispatch("AuthStore/login", this.loggedInUser)
         .then(response => {
-          this.$router.push({ name: "root_path" });
+          this.$router.push({ name: "notes_path" });
         });
     }
   }

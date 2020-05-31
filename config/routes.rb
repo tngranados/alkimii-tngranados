@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   namespace :api, :defaults => { :format => 'json' } do
     resources :users, except: :show
+    resources :notes, except: :show
   end
 
   root :to => "application#index"
