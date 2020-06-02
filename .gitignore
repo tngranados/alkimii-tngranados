@@ -40,5 +40,8 @@
 yarn-debug.log*
 .yarn-integrity
 
+# Misc
+.DS_Store
+
 # Editor
 .vscode
