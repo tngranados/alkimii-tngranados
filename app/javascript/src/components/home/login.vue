@@ -29,6 +29,10 @@ export default {
   mounted: function() {
     if (this.$store.getters["AuthStore/loggedIn"]) {
       this.$router.push({ name: "notes_path" });
+    } else {
+      this.$store
+        .dispatch("AuthStore/checkAuth")
+        .then(res => this.$router.push({ name: "notes_path" }));
     }
   },
 
