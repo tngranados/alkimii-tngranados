@@ -1,4 +1,4 @@
 class User < ApplicationRecord
   has_many :notes, dependent: :destroy
-  devise :database_authenticatable, :validatable
+  devise :database_authenticatable, :validatable, :rememberable
 end

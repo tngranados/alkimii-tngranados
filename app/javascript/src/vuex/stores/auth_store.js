@@ -16,13 +16,17 @@ const AuthStore = {
   },
   mutations: {
     login(state, user) {
-      state.loggedInUser = user;
+      state.loggedInUser = { ...user };
       state.error = "";
       return state;
     },
     error(state, error) {
       state.error = error;
       state.loggedInUser.password = "";
+      return state;
+    },
+    expire(state) {
+      state.loggedInUser = {};
       return state;
     }
   },
@@ -36,11 +40,10 @@ const AuthStore = {
             "Content-type": "application/json"
           },
           method: "post",
-          data: { user }
+          data: { user: { ...user, remember_me: true } }
         })
           .then(res => {
             context.commit("login", res.data);
-            localStorage.setItem("user", JSON.stringify(res.data));
             resolve(res);
           })
           .catch(e => {
@@ -67,9 +70,7 @@ const AuthStore = {
           method: "delete"
         })
           .then(res => {
-            context.commit("login", res.data);
-            context.commit("login", {});
-            localStorage.removeItem("user");
+            context.commit("expire");
             resolve();
           })
           .catch(e => {
@@ -82,6 +83,22 @@ const AuthStore = {
               },
               { root: true }
             );
+            reject(e);
+          });
+      });
+    },
+    checkAuth(context) {
+      return new Promise((resolve, reject) => {
+        axios({
+          url: `/api/user/auth`,
+          method: "get"
+        })
+          .then(res => {
+            context.commit("login", res.data.user);
+            resolve(res);
+          })
+          .catch(e => {
+            context.commit("expire");
             reject(e);
           });
       });

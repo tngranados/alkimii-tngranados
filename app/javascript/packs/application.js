@@ -21,12 +21,5 @@ axios.interceptors.request.use(function(config) {
 
 const app = new Vue({
   router,
-  store,
-  created: function() {
-    // Check if logged in
-    const loggedInUser = JSON.parse(localStorage.getItem("user"));
-    if (loggedInUser) {
-      store.commit("AuthStore/login", loggedInUser);
-    }
-  }
+  store
 }).$mount("#app");

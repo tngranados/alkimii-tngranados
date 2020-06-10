@@ -1,6 +1,6 @@
 class Api::UsersController < Api::ApiController
-  before_action :load_user, except: [:index, :create]
-  before_action :authenticate_user!, :redirect_unless_admin_or_self, except: [:index]
+  before_action :load_user, except: [:index, :auth, :create]
+  before_action :authenticate_user!, :redirect_unless_admin_or_self, except: [:index, :auth]
   
   def redirect_unless_admin_or_self
     head :unauthorized unless current_user.try(:is_admin?) || (@user && current_user && current_user.email == @user.email)
@@ -8,6 +8,16 @@ class Api::UsersController < Api::ApiController
 
   def index
     @users = User.all
+  end
+
+  def auth
+    :authenticate_user! 
+    if user_signed_in?
+      @user = current_user
+      render template: '/api/users/edit'
+    else
+      head :unauthorized
+    end
   end
 
   def edit
